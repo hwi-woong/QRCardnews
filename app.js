@@ -16,11 +16,11 @@ const COLOR = {
 };
 
 // ── DOM 참조 ─────────────────────────────────────────────
-const formPanel   = document.getElementById('formPanel');
-const resultPanel = document.getElementById('resultPanel');
+const formSection = document.getElementById('formSection');
+const resultSection = document.getElementById('resultSection');
 const generateBtn = document.getElementById('generateBtn');
-const saveBtn     = document.getElementById('saveBtn');
-const backBtn     = document.getElementById('backBtn');
+const saveBtn = document.getElementById('saveBtn');
+const backBtn = document.getElementById('backBtn');
 const canvas      = document.getElementById('cardCanvas');
 const ctx         = canvas.getContext('2d');
 
@@ -55,8 +55,8 @@ function handleGenerate() {
 
   state = { storeName, phone, discount, kakaoUrl };
 
-  formPanel.style.display   = 'none';
-  resultPanel.style.display = 'block';
+  formSection.style.display   = 'none';
+  resultSection.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // QR 라이브러리 로드 후 생성
@@ -111,8 +111,8 @@ function handleSave() {
 }
 
 function handleBack() {
-  resultPanel.style.display = 'none';
-  formPanel.style.display   = 'block';
+  resultSection.style.display = 'none';
+  formSection.style.display   = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
