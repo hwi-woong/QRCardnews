@@ -397,3 +397,31 @@ body {
   .main { padding: 36px 24px 64px; }
   .hero__title { font-size: 26px; }
 }
+
+/* ── 안내 방법 ── */
+.guide-method { margin-bottom: 4px; }
+.guide-method__label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 10px;
+  margin-top: 14px;
+}
+.guide-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-light);
+  margin: 12px 0;
+  position: relative;
+}
+.guide-divider::before,
+.guide-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 42%;
+  height: 1px;
+  background: var(--beige-dark);
+}
+.guide-divider::before { left: 0; }
+.guide-divider::after  { right: 0; }
