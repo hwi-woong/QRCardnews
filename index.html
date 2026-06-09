@@ -4,7 +4,569 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>본죽&비빔밥 카드뉴스 생성기</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+/* ── 변수 & 리셋 ──────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --brown:      #3d2b1f;
+  --brown-md:   #6b4a2a;
+  --brown-soft: #8b6340;
+  --beige:      #f7f0e6;
+  --beige-dark: #ede3d4;
+  --cream:      #fffdf7;
+  --yellow:     #fdd835;
+  --yellow-soft:#fff8dc;
+  --orange:     #e65100;
+  --gold:       #d4a017;
+  --white:      #ffffff;
+  --border:     #ddd0bc;
+  --text:       #2d1f0f;
+  --text-soft:  #7a5c3a;
+  --text-light: #b09070;
+  --shadow-sm:  0 1px 4px rgba(61,43,31,0.08);
+  --shadow-md:  0 4px 16px rgba(61,43,31,0.12);
+  --shadow-lg:  0 8px 32px rgba(61,43,31,0.16);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background: var(--beige);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 헤더 ─────────────────────────────────────────────── */
+.site-header {
+  background: var(--brown);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+.site-header__logo {
+  font-size: 24px;
+  line-height: 1;
+}
+.site-header__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0e6d3;
+  letter-spacing: -0.01em;
+}
+
+/* ── 메인 ─────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── 히어로 배너 ───────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--brown) 0%, #6b3a1f 100%);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -20px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 50%;
+}
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(253,216,53,0.2);
+  border: 1px solid rgba(253,216,53,0.4);
+  color: #fdd835;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+.hero__title {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.hero__desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* ── 폼 카드 ──────────────────────────────────────────── */
+.form-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+.form-card__section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--beige-dark);
+}
+.form-card__section-label::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: var(--brown);
+  border-radius: 2px;
+}
+
+/* ── 필드 ─────────────────────────────────────────────── */
+.field { margin-bottom: 18px; }
+.field:last-of-type { margin-bottom: 0; }
+
+.field__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.req {
+  color: var(--orange);
+  font-size: 12px;
+}
+.field__hint {
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.field__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.field__icon {
+  position: absolute;
+  left: 14px;
+  font-size: 15px;
+  pointer-events: none;
+}
+.field__input {
+  width: 100%;
+  padding: 13px 14px 13px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--beige);
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+  letter-spacing: -0.01em;
+}
+.field__input:focus {
+  border-color: var(--brown-soft);
+  background: var(--cream);
+  box-shadow: 0 0 0 4px rgba(139,99,64,0.10);
+}
+.field__input::placeholder {
+  color: #c4b09a;
+  font-weight: 400;
+}
+
+/* ── 구분선 ────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--beige-dark);
+  margin: 20px 0;
+}
+
+/* ── 버튼 ─────────────────────────────────────────────── */
+.btn-generate {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--brown) 0%, #6b3a1f 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(61,43,31,0.3);
+  transition: all 0.2s;
+  margin-top: 24px;
+}
+.btn-generate:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(61,43,31,0.36);
+}
+.btn-generate:active { transform: scale(0.99); }
+.btn-generate__icon { font-size: 18px; }
+
+/* ── 결과 카드 ─────────────────────────────────────────── */
+.result-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+}
+.result-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.result-card__title {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.result-card__badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.result-card__desc {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* ── 캔버스 ────────────────────────────────────────────── */
+.canvas-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--cream);
+  margin-bottom: 16px;
+}
+#cardCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── 저장 버튼 행 ──────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.btn-save {
+  flex: 2;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--brown) 0%, #6b3a1f 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 3px 12px rgba(61,43,31,0.25);
+  transition: all 0.2s;
+  letter-spacing: -0.01em;
+}
+.btn-save:hover { transform: translateY(-1px); }
+
+.btn-back {
+  flex: 1;
+  padding: 14px;
+  background: var(--beige);
+  color: var(--brown-soft);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: -0.01em;
+}
+.btn-back:hover { background: var(--beige-dark); }
+
+/* ── 팁 ────────────────────────────────────────────────── */
+.tip {
+  background: var(--yellow-soft);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--brown-md);
+  line-height: 1.7;
+}
+
+/* ── 푸터 ─────────────────────────────────────────────── */
+.site-footer {
+  background: var(--brown);
+  padding: 20px;
+  text-align: center;
+}
+.site-footer__text {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.02em;
+}
+
+/* ── 반응형 ────────────────────────────────────────────── */
+@media (min-width: 600px) {
+  .main { padding: 40px 24px 80px; }
+  .hero { padding: 32px 32px 28px; }
+  .hero__title { font-size: 26px; }
+}
+
+
+/* ── 탭 ─────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.4;
+}
+.tab-btn.active {
+  background: var(--brown);
+  color: var(--white);
+  border-color: var(--brown);
+  box-shadow: 0 3px 10px rgba(61,43,31,0.25);
+}
+.tab-btn:hover:not(.active) {
+  border-color: var(--brown-soft);
+  color: var(--brown);
+  background: var(--beige);
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── 네이버 QR ─────────────────────────────────────── */
+.naver-hero {
+  background: linear-gradient(135deg, #1a7a34 0%, #0d5c25 100%);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.naver-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+.naver-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+.naver-hero__title {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.naver-hero__desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+
+.step-guide {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 22px 20px;
+  box-shadow: var(--shadow-md);
+}
+.step-guide__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.step-num {
+  width: 24px;
+  height: 24px;
+  background: #1a7a34;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.step-text strong { color: #1a7a34; }
+.step-text a {
+  color: #1a7a34;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.qr-result-card {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+.qr-result-card.show { display: block; }
+.qr-result-card__title {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.qr-result-card__desc {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 18px;
+}
+.qr-display {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.qr-display canvas {
+  border: 3px solid #1a7a34;
+  border-radius: 10px;
+  padding: 8px;
+  background: #fff;
+}
+.btn-naver {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #1a7a34 0%, #0d5c25 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(26,122,52,0.35);
+  transition: all 0.2s;
+  letter-spacing: -0.01em;
+}
+.btn-naver:hover { transform: translateY(-1px); }
+
+</style>
 </head>
 <body>
 
@@ -117,12 +679,453 @@
 
     </div>
 
+    </div><!-- /tab-kakao -->
+
+    <!-- ── 네이버 탭 ── -->
+    <div id="tab-naver" class="tab-panel">
+
+      <!-- 히어로 -->
+      <div class="naver-hero">
+        <div class="naver-hero__badge">🟢 네이버 리뷰</div>
+        <h2 class="naver-hero__title">리뷰 QR코드를<br>바로 만들어요</h2>
+        <p class="naver-hero__desc">네이버 플레이스 URL을 입력하면<br>리뷰 QR코드가 즉시 생성됩니다.</p>
+      </div>
+
+      <!-- 스마트플레이스 안내 -->
+      <div class="step-guide">
+        <div class="step-guide__title">📌 네이버 리뷰 URL 가져오는 방법</div>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <a href="https://smartplace.naver.com" target="_blank">smartplace.naver.com</a> 접속 후 로그인
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">내 업체 선택 → <strong>마케팅</strong> 메뉴 클릭</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>QR코드 다운로드</strong> 또는 리뷰 링크 복사</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">아래에 링크 붙여넣고 <strong>QR 생성하기</strong> 클릭!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR 생성 폼 -->
+      <div class="form-card">
+        <div class="form-card__section-label">QR 생성</div>
+
+        <div class="field">
+          <label class="field__label" for="naverStoreName">
+            매장명 <span class="req">*</span>
+          </label>
+          <div class="field__input-wrap">
+            <span class="field__icon">🏠</span>
+            <input class="field__input" id="naverStoreName"
+              type="text" placeholder="예) 부산대연점" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="naverUrl">
+            네이버 리뷰 링크 <span class="req">*</span>
+          </label>
+          <div class="field__input-wrap">
+            <span class="field__icon">🔗</span>
+            <input class="field__input" id="naverUrl"
+              type="url" placeholder="https://naver.me/xxxxxxxx">
+          </div>
+        </div>
+
+        <button class="btn-naver" onclick="generateNaverQR()">
+          🟢 네이버 리뷰 QR 생성하기
+        </button>
+      </div>
+
+      <!-- QR 결과 -->
+      <div class="qr-result-card" id="naverQRResult">
+        <div class="qr-result-card__title">완성된 QR코드</div>
+        <p class="qr-result-card__desc" id="naverQRDesc">저장 후 ChatGPT 카드뉴스 프롬프트에 첨부하세요.</p>
+        <div class="qr-display">
+          <canvas id="naverQRCanvas"></canvas>
+        </div>
+        <button class="btn-naver" onclick="downloadNaverQR()">
+          💾 QR코드 저장 (PNG)
+        </button>
+        <div class="tip" style="margin-top:12px">
+          💡 저장한 QR코드를 ChatGPT에 첨부해서 카드뉴스를 만드세요!
+        </div>
+      </div>
+
+    </div><!-- /tab-naver -->
+
+
   </main>
 
   <footer class="site-footer">
     <p class="site-footer__text">본죽&amp;비빔밥 가맹점 전용 서비스</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script>
+/* ── app.js — 본죽&비빔밥 카드뉴스 생성기 ──────────────── */
+
+// ── 색상 팔레트 ──────────────────────────────────────────
+const COLOR = {
+  brown:      '#3d2b1f',
+  brownMid:   '#8b6340',
+  brownLight: '#c8a97a',
+  beige:      '#f5ede0',
+  cream:      '#fffce0',
+  yellow:     '#fdd835',
+  orange:     '#e65100',
+  red:        '#c62828',
+  gold:       '#ffc107',
+  white:      '#ffffff',
+  textSub:    '#7a5030',
+};
+
+// ── DOM 참조 ─────────────────────────────────────────────
+const formSection = document.getElementById('formSection');
+const resultSection = document.getElementById('resultSection');
+const generateBtn = document.getElementById('generateBtn');
+const saveBtn = document.getElementById('saveBtn');
+const backBtn = document.getElementById('backBtn');
+const canvas      = document.getElementById('cardCanvas');
+const ctx         = canvas.getContext('2d');
+
+// ── 상태 ─────────────────────────────────────────────────
+let state = { storeName: '', phone: '', discount: '', kakaoUrl: '' };
+
+// ── QRCode 라이브러리 동적 로드 ───────────────────────────
+function loadQRLib(callback) {
+  if (window.QRCode) { callback(); return; }
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  script.onload  = callback;
+  script.onerror = () => { console.error('QR 라이브러리 로드 실패'); callback(); };
+  document.head.appendChild(script);
+}
+
+// ── 이벤트 바인딩 ─────────────────────────────────────────
+generateBtn.addEventListener('click', handleGenerate);
+saveBtn.addEventListener('click', handleSave);
+backBtn.addEventListener('click', handleBack);
+
+// ── 생성 핸들러 ───────────────────────────────────────────
+function handleGenerate() {
+  const storeName = document.getElementById('storeName').value.trim();
+  const phone     = document.getElementById('phone').value.trim();
+  const discount  = document.getElementById('discount').value.trim();
+  const kakaoUrl  = document.getElementById('kakaoUrl').value.trim();
+
+  if (!storeName) { showError('storeName', '매장명을 입력해주세요!'); return; }
+  if (!discount)  { showError('discount',  '할인 혜택을 입력해주세요!'); return; }
+  if (!kakaoUrl)  { showError('kakaoUrl',  '카카오채널 링크를 입력해주세요!'); return; }
+
+  state = { storeName, phone, discount, kakaoUrl };
+
+  formSection.style.display   = 'none';
+  resultSection.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // QR 라이브러리 로드 후 생성
+  loadQRLib(() => generateQRAndDraw());
+}
+
+// ── QR 생성 → 카드 렌더 ──────────────────────────────────
+function generateQRAndDraw() {
+  // 히든 div에 QR 생성 (로컬, CORS 없음)
+  let hiddenDiv = document.getElementById('__qrHidden');
+  if (!hiddenDiv) {
+    hiddenDiv = document.createElement('div');
+    hiddenDiv.id = '__qrHidden';
+    hiddenDiv.style.cssText = 'position:absolute;left:-9999px;top:0;';
+    document.body.appendChild(hiddenDiv);
+  }
+  hiddenDiv.innerHTML = '';
+
+  if (!window.QRCode) {
+    // 라이브러리 없으면 QR 없이 렌더
+    renderCard(null);
+    return;
+  }
+
+  new QRCode(hiddenDiv, {
+    text:          state.kakaoUrl,
+    width:         300,
+    height:        300,
+    colorDark:     COLOR.brown,
+    colorLight:    COLOR.cream,
+    correctLevel:  QRCode.CorrectLevel.H,
+  });
+
+  // canvas 요소 추출 (약간의 딜레이 필요)
+  setTimeout(() => {
+    const qrCanvas = hiddenDiv.querySelector('canvas');
+    renderCard(qrCanvas);
+  }, 150);
+}
+
+function handleSave() {
+  try {
+    const link = document.createElement('a');
+    link.download = `bonjuk_cardnews_${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    alert('저장 실패! 이미지 위에서 우클릭 → 이미지 저장을 이용해주세요.');
+  }
+}
+
+function handleBack() {
+  resultSection.style.display = 'none';
+  formSection.style.display   = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 에러 표시 ─────────────────────────────────────────────
+function showError(fieldId, msg) {
+  const input = document.getElementById(fieldId);
+  input.focus();
+  input.style.borderColor = '#c62828';
+  alert(msg);
+  setTimeout(() => { input.style.borderColor = ''; }, 2000);
+}
+
+// ── 카드 렌더링 ───────────────────────────────────────────
+function renderCard(qrSource) {
+  const W = 560, H = 800;
+  canvas.width  = W;
+  canvas.height = H;
+
+  drawBackground(W, H);
+  drawHeader(W, state.storeName);
+  drawTitleZone(W);
+  drawBenefitBox(W, state.discount);
+  drawQRZone(W, qrSource);
+  drawStepsZone(W, state.discount);
+  drawFooter(W, H, state.storeName, state.phone);
+}
+
+// ── 드로우 헬퍼 ───────────────────────────────────────────
+function roundRect(x, y, w, h, r, fill, stroke, sw = 2) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y,   x + w, y + r,     r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+  if (fill)   { ctx.fillStyle = fill;     ctx.fill();   }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = sw; ctx.stroke(); }
+}
+
+function font(size, bold = false) {
+  return `${bold ? 'bold ' : ''}${size}px 'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif`;
+}
+
+// ── 섹션별 드로우 ─────────────────────────────────────────
+function drawBackground(W, H) {
+  roundRect(0, 0, W, H, 20, COLOR.cream);
+}
+
+function drawHeader(W, storeName) {
+  ctx.beginPath();
+  ctx.moveTo(0, 20); ctx.arcTo(0, 0, 20, 0, 20);
+  ctx.lineTo(W - 20, 0); ctx.arcTo(W, 0, W, 20, 20);
+  ctx.lineTo(W, 62); ctx.lineTo(0, 62); ctx.closePath();
+  ctx.fillStyle = COLOR.brown; ctx.fill();
+  ctx.fillStyle = '#f0e6d3';
+  ctx.font = font(15, true); ctx.textAlign = 'center';
+  ctx.fillText('본죽&비빔밥  ' + (storeName || '○○점'), W / 2, 38);
+}
+
+function drawTitleZone(W) {
+  ctx.fillStyle = COLOR.cream; ctx.fillRect(0, 62, W, 136);
+  [[34,94,22],[58,118,13],[W-38,98,18],[W-62,90,12]].forEach(([x,y,sz]) => {
+    ctx.fillStyle = COLOR.gold; ctx.font = sz + 'px serif';
+    ctx.textAlign = 'center'; ctx.fillText('✦', x, y);
+  });
+  ctx.fillStyle = COLOR.brown; ctx.font = font(28, true); ctx.textAlign = 'center';
+  ctx.fillText('카카오톡 채널 추가하고', W / 2, 106);
+  ctx.fillText('혜택 받으세요! 💬', W / 2, 144);
+}
+
+function drawBenefitBox(W, discount) {
+  roundRect(24, 206, W - 48, 72, 14, COLOR.yellow);
+  ctx.fillStyle = COLOR.brown; ctx.font = font(13, true); ctx.textAlign = 'center';
+  ctx.fillText('채널 추가하면', W / 2, 230);
+  ctx.fillStyle = COLOR.orange; ctx.font = font(32, true);
+  ctx.fillText((discount || '20%') + '  할인 쿠폰 즉시 발급!', W / 2, 264);
+}
+
+function drawQRZone(W, qrSource) {
+  ctx.fillStyle = '#fff8e1'; ctx.fillRect(0, 292, W, 244);
+  ctx.fillStyle = COLOR.brown; ctx.font = font(13, true); ctx.textAlign = 'center';
+  ctx.fillText('📱  카메라로 QR 코드를 스캔하세요', W / 2, 316);
+
+  const qs = 190, qx = (W - qs) / 2, qy = 330;
+  roundRect(qx - 8, qy - 8, qs + 16, qs + 16, 10, COLOR.white, COLOR.brown, 3);
+
+  if (qrSource) {
+    try { ctx.drawImage(qrSource, qx, qy, qs, qs); }
+    catch (_) { drawQRFallback(qx, qy, qs); }
+  } else {
+    drawQRFallback(qx, qy, qs);
+  }
+
+  ctx.fillStyle = COLOR.brownMid; ctx.font = font(11); ctx.textAlign = 'center';
+  ctx.fillText('스캔 후 채널 추가 → 쿠폰 즉시 발급!', W / 2, qy + qs + 24);
+}
+
+function drawQRFallback(x, y, s) {
+  ctx.fillStyle = '#f0ece4'; ctx.fillRect(x, y, s, s);
+  ctx.fillStyle = '#bbb'; ctx.font = font(12); ctx.textAlign = 'center';
+  ctx.fillText('QR 코드', x + s / 2, y + s / 2 - 8);
+  ctx.fillText('로딩 중...', x + s / 2, y + s / 2 + 10);
+}
+
+function drawStepsZone(W, discount) {
+  ctx.strokeStyle = '#e8d8b0'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(28, 548); ctx.lineTo(W - 28, 548); ctx.stroke();
+  ctx.fillStyle = COLOR.cream; ctx.fillRect(0, 548, W, 178);
+  ctx.fillStyle = COLOR.brown; ctx.font = font(15, true); ctx.textAlign = 'center';
+  ctx.fillText('📋  참여 방법', W / 2, 576);
+
+  const steps = [
+    { n:'1', icon:'💬', t1:'카카오톡 실행',  t2:"'본죽&비빔밥' 검색" },
+    { n:'2', icon:'➕', t1:'채널 추가',      t2:'채널 추가 버튼 탭!' },
+    { n:'3', icon:'🎁', t1:'쿠폰 발급',      t2:(discount||'20%')+' 쿠폰 사용!' },
+  ];
+
+  const colW = (W - 56) / 3;
+  steps.forEach((s, i) => {
+    const sx = 28 + i * colW + 6, sy = 588, sw = colW - 12;
+    roundRect(sx, sy, sw, 124, 12, COLOR.white, '#e8d8b0', 1.5);
+    ctx.beginPath(); ctx.arc(sx + sw / 2, sy + 24, 18, 0, Math.PI * 2);
+    ctx.fillStyle = COLOR.brown; ctx.fill();
+    ctx.fillStyle = COLOR.white; ctx.font = font(14, true); ctx.textAlign = 'center';
+    ctx.fillText(s.n, sx + sw / 2, sy + 29);
+    ctx.font = '22px serif'; ctx.fillText(s.icon, sx + sw / 2, sy + 70);
+    ctx.fillStyle = COLOR.brown; ctx.font = font(10, true); ctx.textAlign = 'center';
+    ctx.fillText(s.t1, sx + sw / 2, sy + 90);
+    ctx.fillStyle = COLOR.textSub; ctx.font = font(9); ctx.textAlign = 'center';
+    if (ctx.measureText(s.t2).width > sw - 8) {
+      const mid = Math.ceil(s.t2.length / 2);
+      ctx.fillText(s.t2.slice(0, mid), sx + sw / 2, sy + 104);
+      ctx.fillText(s.t2.slice(mid),    sx + sw / 2, sy + 116);
+    } else {
+      ctx.fillText(s.t2, sx + sw / 2, sy + 104);
+    }
+    if (i < 2) {
+      ctx.fillStyle = COLOR.brownLight; ctx.font = font(20); ctx.textAlign = 'center';
+      ctx.fillText('›', sx + sw + 10, sy + 66);
+    }
+  });
+}
+
+function drawFooter(W, H, storeName, phone) {
+  ctx.beginPath();
+  ctx.moveTo(0, 726); ctx.lineTo(W, 726); ctx.lineTo(W, H - 20);
+  ctx.arcTo(W, H, W - 20, H, 20); ctx.lineTo(20, H);
+  ctx.arcTo(0, H, 0, H - 20, 20); ctx.closePath();
+  ctx.fillStyle = COLOR.brown; ctx.fill();
+  ctx.fillStyle = '#f0e6d3'; ctx.font = font(13, true); ctx.textAlign = 'left';
+  ctx.fillText('🏠  본죽&비빔밥 ' + (storeName || '○○점'), 22, 752);
+  if (phone) {
+    ctx.fillStyle = COLOR.brownLight; ctx.font = font(11);
+    ctx.fillText('📞  ' + phone, 22, 770);
+  }
+  ctx.fillStyle = COLOR.brownLight; ctx.font = font(10); ctx.textAlign = 'right';
+  ctx.fillText('🛵  배달의민족 · 쿠팡이츠 · 본오더 · 땡겨요', W - 20, 756);
+  ctx.fillStyle = '#6b4a2a'; ctx.font = font(10); ctx.textAlign = 'center';
+  ctx.fillText('정성 가득, 건강 가득한 한 끼로 보답하겠습니다', W / 2, 788);
+}
+
+
+
+// ── 탭 전환 ──────────────────────────────────────────────
+function switchTab(tabName, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tabName).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 네이버 QR 생성 ────────────────────────────────────────
+function generateNaverQR() {
+  const storeName = document.getElementById('naverStoreName').value.trim();
+  const url = document.getElementById('naverUrl').value.trim();
+  if (!storeName) { alert('매장명을 입력해주세요!'); return; }
+  if (!url) { alert('네이버 리뷰 링크를 입력해주세요!'); return; }
+
+  loadQRLib(() => {
+    const resultCard = document.getElementById('naverQRResult');
+    const desc = document.getElementById('naverQRDesc');
+    const canvas = document.getElementById('naverQRCanvas');
+
+    // 히든 div에 QR 생성
+    let hiddenDiv = document.getElementById('__naverQrHidden');
+    if (!hiddenDiv) {
+      hiddenDiv = document.createElement('div');
+      hiddenDiv.id = '__naverQrHidden';
+      hiddenDiv.style.cssText = 'position:absolute;left:-9999px;top:0;';
+      document.body.appendChild(hiddenDiv);
+    }
+    hiddenDiv.innerHTML = '';
+
+    if (!window.QRCode) { alert('QR 라이브러리 로드 실패. 새로고침 후 다시 시도해주세요.'); return; }
+
+    new QRCode(hiddenDiv, {
+      text: url,
+      width: 300,
+      height: 300,
+      colorDark: '#1a7a34',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    setTimeout(() => {
+      const qrCanvas = hiddenDiv.querySelector('canvas');
+      if (qrCanvas) {
+        canvas.width = 300;
+        canvas.height = 300;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, 300, 300);
+        ctx.drawImage(qrCanvas, 0, 0, 300, 300);
+      }
+      desc.textContent = `본죽&비빔밥 ${storeName} 리뷰 QR코드가 생성됐어요!`;
+      resultCard.classList.add('show');
+      resultCard.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+  });
+}
+
+function downloadNaverQR() {
+  const canvas = document.getElementById('naverQRCanvas');
+  const storeName = document.getElementById('naverStoreName').value.trim() || '매장';
+  try {
+    const a = document.createElement('a');
+    a.download = `naver_review_qr_${storeName}_${Date.now()}.png`;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e) {
+    alert('QR코드 위에서 우클릭 → 이미지 저장을 이용해주세요.');
+  }
+}
+
+</script>
 </body>
 </html>
